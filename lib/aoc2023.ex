@@ -13,7 +13,7 @@ defmodule Aoc2023 do
       |> String.split("\n")
       |> Enum.map(&Regex.replace(~r/\D/, &1, ""))
       |> Enum.reject(&(&1 == ""))
-      |> Enum.map(fn x -> String.at(x, 0) <> String.at(x, -1) end)
+      |> Enum.map(&(String.at(&1, 0) <> String.at(&1, -1)))
       |> Enum.map(&String.to_integer/1)
       |> Enum.sum()
     end
@@ -22,7 +22,7 @@ defmodule Aoc2023 do
       Aoc2023.get_input_for_day(1)
       |> String.split("\n")
       |> Enum.map(fn x ->
-        Regex.scan(~r/\d+|one|two|three|four|five|six|seven|eight|nine/, x)
+        Regex.scan(~r/(?=(one|two|three|four|five|six|seven|eight|nine))|\d+/, x)
         |> List.flatten
         |> Enum.map(&case &1 do
             "one" -> "1"
@@ -39,7 +39,7 @@ defmodule Aoc2023 do
         |> Enum.join
         end)
       |> Enum.reject(&(&1 == ""))
-      |> Enum.map(fn x -> String.at(x, 0) <> String.at(x, -1) end)
+      |> Enum.map(&(String.at(&1, 0) <> String.at(&1, -1)))
       |> Enum.map(&String.to_integer/1)
       |> Enum.sum()
     end
