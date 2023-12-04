@@ -36,7 +36,7 @@ defmodule Aoc2023 do
             "nine" -> "9"
             _ -> &1
             end)
-        |> Enum.join
+        |> Enum.join()
         end)
       |> Enum.reject(&(&1 == ""))
       |> Enum.map(&(String.at(&1, 0) <> String.at(&1, -1)))
