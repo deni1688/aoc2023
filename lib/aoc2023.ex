@@ -65,18 +65,20 @@ defmodule Aoc2023 do
           |> Enum.map(&%{name: &1.color, value: String.to_integer(&1.value)})
         end)
       end)
-      |> Enum.filter(fn game-> 
-        Enum.any?(game, fn set -> 
+      |> Enum.with_index(0)
+      |> Enum.reduce(0, fn {game, index}, acc -> 
+        if Enum.all?(game, fn set -> 
           Enum.all?(set, fn %{name: name, value: value} -> 
             name == "red" && value <= 12 or
             name == "green" && value <= 13 or
             name == "blue" && value <= 14
           end)
-        end)
+        end) do
+          acc + index
+        else
+          acc
+        end
       end)
-      |> Enum.with_index(1)
-      |> Enum.map(fn {_game, index} -> index end)
-      |> Enum.sum()
     end
   end
 end
