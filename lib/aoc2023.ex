@@ -48,9 +48,6 @@ defmodule Aoc2023 do
   end
 
   defmodule Day2 do
-    # red = 12
-    # green = 13
-    # blue = 14
     def part1 do
       Aoc2023.get_input_for_day(2)
       |> String.split("\n")
@@ -63,10 +60,23 @@ defmodule Aoc2023 do
         |> Enum.map(fn set ->
           set
           |> Enum.map(&String.split(&1, " "))
-          |> Enum.map(&%{value: &1 |> List.first() , color: &1 |> List.last()})
+          |> Enum.map(fn it -> %{color: Enum.at(it, 1), value: Enum.at(it, 0)} end)
+          |> Enum.reject(&(&1.value == ""))
+          |> Enum.map(&%{name: &1.color, value: String.to_integer(&1.value)})
+        end)
+      end)
+      |> Enum.filter(fn game-> 
+        Enum.any?(game, fn set -> 
+          Enum.all?(set, fn %{name: name, value: value} -> 
+            name == "red" && value <= 12 or
+            name == "green" && value <= 13 or
+            name == "blue" && value <= 14
+          end)
         end)
       end)
       |> Enum.with_index(1)
+      |> Enum.map(fn {_game, index} -> index end)
+      |> Enum.sum()
     end
   end
 end
