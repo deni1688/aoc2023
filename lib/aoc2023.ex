@@ -64,8 +64,10 @@ defmodule Aoc2023 do
           |> Enum.reject(&(&1.value == ""))
           |> Enum.map(&%{name: &1.color, value: String.to_integer(&1.value)})
         end)
+        |> Enum.reject(&(&1 == []))
       end)
-      |> Enum.with_index(0)
+      |> Enum.reject(&(&1 == []))
+      |> Enum.with_index(1)
       |> Enum.reduce(0, fn {game, index}, acc -> 
         if Enum.all?(game, fn set -> 
           Enum.all?(set, fn %{name: name, value: value} -> 
