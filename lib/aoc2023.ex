@@ -50,6 +50,22 @@ defmodule Aoc2023 do
   defmodule Day2 do
     def part1 do
       Aoc2023.get_input_for_day(2)
+      |> get_games()
+      |> get_possible_scores()
+    end
+
+    defp get_possible_scores(games) do
+      games
+      |> Enum.with_index(1)
+      |> Enum.reduce(0, fn {game, index}, acc ->
+        if Enum.all?(game, fn set -> Enum.all?(set, &is_possible/1) end),
+          do: acc + index,
+          else: acc
+      end)
+    end
+
+    defp get_games(content) do
+      content
       |> String.split("\n")
       |> Enum.map(&String.replace(&1, ~r/Game \d+: /, ""))
       |> Enum.map(fn game ->
@@ -67,20 +83,10 @@ defmodule Aoc2023 do
         |> Enum.reject(&(&1 == []))
       end)
       |> Enum.reject(&(&1 == []))
-      |> Enum.with_index(1)
-      |> Enum.reduce(0, fn {game, index}, acc -> 
-        if Enum.all?(game, fn set -> 
-          Enum.all?(set, fn %{name: name, value: value} -> 
-            name == "red" && value <= 12 or
-            name == "green" && value <= 13 or
-            name == "blue" && value <= 14
-          end)
-        end) do
-          acc + index
-        else
-          acc
-        end
-      end)
     end
+
+    defp is_possible(%{name: "red", value: value}), do: value <= 12
+    defp is_possible(%{name: "green", value: value}), do: value <= 13
+    defp is_possible(%{name: "blue", value: value}), do: value <= 14
   end
 end
