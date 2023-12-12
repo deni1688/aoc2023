@@ -13,44 +13,31 @@ defmodule Day2 do
 
   defp calc_min_required(games) do
     games
-    |> Enum.reduce(0, fn game, acc ->
-      max = Enum.map(game, fn set ->
-          if set == [] do
-            0
-          else
-            max_red =
-              set
-              |> Enum.filter(fn card -> card.name == "red" end)
-              |> Enum.map(fn card -> card.value end)
-              |> Enum.max()
+    |> Enum.map(&(List.flatten(&1) |> Enum.reject(fn it -> it == nil or it == [] end)))
+    |> Enum.reject(&(&1 == []))
+    |> Enum.reduce(0, fn game, acc -> 
+        red = Enum.filter(game, fn it -> it.name == "red" end) |> get_max() 
+        green = Enum.filter(game, fn it -> it.name == "green" end)  |> get_max() 
+        blue = Enum.filter(game, fn it -> it.name == "blue" end)  |> get_max() 
 
-            max_green =
-              set
-              |> Enum.filter(fn card -> card.name == "green" end)
-              |> Enum.map(fn card -> card.value end)
-              |> Enum.max()
-
-            max_blue =
-              set
-              |> Enum.filter(fn card -> card.name == "blue" end)
-              |> Enum.map(fn card -> card.value end)
-              |> Enum.max()
-
-            max_red * max_green * max_blue
-          end
-        end)
-        IO.inspect(max)
-        acc
+        acc + (red * green * blue)
     end)
+  end
+
+  defp get_max(list) do
+    list 
+    |> Enum.max_by(fn it -> it.value end) |> Map.get(:value)
   end
 
   defp sum_possible(games) do
     games
     |> Enum.with_index(1)
     |> Enum.reduce(0, fn {game, index}, acc ->
-      if Enum.all?(game, fn set -> Enum.all?(set, &is_possible/1) end),
-        do: acc + index,
-        else: acc
+      if Enum.all?(game, fn set -> Enum.all?(set, &is_possible/1) end) do
+        acc + index
+      else
+        acc
+      end
     end)
   end
 
